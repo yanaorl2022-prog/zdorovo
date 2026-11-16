@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Архітектура здорового способу життя</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/manrope@5.0.0/index.css">
+<style>
+  * { font-family: 'Inter', sans-serif; }
+  h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; }
+  
+  body {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfeff 50%, #f5f3ff 100%);
+    min-height: 100vh;
+  }
+  
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+  }
+  
+  .gradient-text {
+    background: linear-gradient(135deg, #10b981 0%, #0891b2 50%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .card-hover {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -15px rgba(16, 185, 129, 0.25);
+  }
+  
+  .tab-btn {
+    transition: all 0.3s ease;
+  }
+  
+  .tab-btn.active {
+    background: linear-gradient(135deg, #10b981, #0891b2);
+    color: white;
+    box-shadow: 0 8px 20px -5px rgba(16, 185, 129, 0.5);
+  }
+  
+  .tracker-cell {
+    transition: all 0.25s ease;
+    cursor: pointer;
+  }
+  
+  .tracker-cell:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+  }
+  
+  .tracker-cell.done {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    border-color: #10b981;
+  }
+  
+  .check-icon {
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  
+  .tracker-cell.done .check-icon {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  .pulse-ring {
+    animation: pulse-ring 2s infinite;
+  }
+  
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  }
+  
+  .fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .info-block {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .info-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #10b981, #0891b2);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.4s ease;
+  }
+  
+  .info-block:hover::before {
+    transform: scaleY(1);
+  }
+  
+  .info-block:hover {
+    transform: translateX(8px);
+  }
+  
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.3;
+    z-index: 0;
+  }
+  
+  .progress-ring {
+    transition: stroke-dashoffset 0.5s ease;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+  }
+  
+  .timer-display {
+    font-variant-numeric: tabular-nums;
+  }
+  
+  @media print {
+    .no-print { display: none !important; }
+    body { background: white; }
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+</head>
+<body class="relative overflow-x-hidden">
+
+<!-- Декоративні блоби -->
+<div class="blob bg-emerald-300 w-96 h-96 -top-20 -left-20"></div>
+<div class="blob bg-cyan-300 w-96 h-96 top-1/3 -right-20"></div>
+<div class="blob bg-violet-300 w-96 h-96 bottom-0 left-1/3"></div>
+
+<div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+  <!-- Header -->
+  <header class="glass rounded-3xl p-6 sm:p-8 mb-8 shadow-xl">
+    <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+      <div class="flex-1">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-4xl">🌿</span>
+          <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold uppercase tracking-wider">Практичне завдання</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold gradient-text mb-3 leading-tight">
+          Архітектура здорового способу життя
+        </h1>
+        <p class="text-gray-600 text-base sm:text-lg max-w-3xl">
+          Закріпи знання з синхронного уроку та перетвори їх на практичні інструменти для щоденного самоменеджменту під час підготовки до іспитів 💪
+        </p>
+      </div>
+      
+      <!-- Таймер -->
+      <div class="glass rounded-2xl p-5 min-w-[220px] text-center no-print">
+        <div class="text-xs text-gray-500 uppercase tracking-wider mb-2 font-semibold">Час на виконання</div>
+        <div id="timer" class="timer-display text-3xl font-bold text-gray-800 mb-3">30:00</div>
+        <div class="flex gap-2">
+          <button id="startTimer" class="flex-1 px-3 py-2 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-lg text-sm font-semibold hover:shadow-lg transition">Старт</button>
+          <button id="resetTimer" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-300 transition">↻</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="glass rounded-2xl p-2 mb-8 flex gap-2 no-print scrollbar-hide overflow-x-auto">
+    <button class="tab-btn active flex-1 min-w-[200px] px-6 py-4 rounded-xl font-semibold text-sm sm:text-base flex items-center justify-center gap-2" data-tab="1">
+      <span class="text-xl">📊</span>
+      <span>Варіант 1. Біохакінг-трекер</span>
+    </button>
+    <button class="tab-btn flex-1 min-w-[200px] px-6 py-4 rounded-xl font-semibold text-sm sm:text-base text-gray-600 flex items-center justify-center gap-2" data-tab="2">
+      <span class="text-xl">🧠</span>
+      <span>Варіант 2. Антистрес-інструкція</span>
+    </button>
+  </div>
+
+  <!-- Варіант 1: Трекер -->
+  <section id="tab1" class="fade-in">
+    <div class="glass rounded-3xl p-6 sm:p-8 mb-6 shadow-xl">
+      <div class="flex items-start gap-4 mb-6">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-2xl flex-shrink-0">📊</div>
+        <div class="flex-1">
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">Мій персональний біохакінг-трекер</h2>
+          <p class="text-gray-600">Побудова системи звичок на 7 днів. Натискай на клітинки, щоб відмітити виконане. Прогрес зберігається автоматично.</p>
+        </div>
+      </div>
+
+      <!-- Прогрес -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-4 border border-blue-200">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-2xl">💧</span>
+            <span id="prog-water" class="text-xl font-bold text-blue-600">0/7</span>
+          </div>
+          <div class="text-xs text-blue-700 font-semibold">Вода та харчування</div>
+        </div>
+        <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-4 border border-orange-200">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-2xl">🚶‍♀️</span>
+            <span id="prog-move" class="text-xl font-bold text-orange-600">0/7</span>
+          </div>
+          <div class="text-xs text-orange-700 font-semibold">Рух та постава</div>
+        </div>
+        <div class="bg-gradient-to-br from-violet-50 to-violet-100 rounded-2xl p-4 border border-violet-200">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-2xl">💻</span>
+            <span id="prog-digital" class="text-xl font-bold text-violet-600">0/7</span>
+          </div>
+          <div class="text-xs text-violet-700 font-semibold">Цифрова гігієна</div>
+        </div>
+        <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-2xl p-4 border border-indigo-200">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-2xl">🌙</span>
+            <span id="prog-sleep" class="text-xl font-bold text-indigo-600">0/7</span>
+          </div>
+          <div class="text-xs text-indigo-700 font-semibold">Сон та відновлення</div>
+        </div>
+      </div>
+
+      <!-- Трекер таблиця -->
+      <div class="overflow-x-auto scrollbar-hide">
+        <table class="w-full min-w-[800px]">
+          <thead>
+            <tr class="border-b-2 border-gray-200">
+              <th class="text-left py-3 px-2 text-gray-700 font-bold text-sm uppercase tracking-wider">День</th>
+              <th class="text-left py-3 px-2 text-blue-700 font-bold text-sm uppercase tracking-wider">💧 Вода та харчування</th>
+              <th class="text-left py-3 px-2 text-orange-700 font-bold text-sm uppercase tracking-wider">🚶‍♀️ Рух та постава</th>
+              <th class="text-left py-3 px-2 text-violet-700 font-bold text-sm uppercase tracking-wider">💻 Цифрова/побутова гігієна</th>
+              <th class="text-left py-3 px-2 text-indigo-700 font-bold text-sm uppercase tracking-wider">🌙 Сон та відновлення</th>
+            </tr>
+          </thead>
+          <tbody id="tracker-body"></tbody>
+        </table>
+      </div>
+
+      <!-- Загальний прогрес -->
+      <div class="mt-6 bg-gradient-to-r from-emerald-50 via-cyan-50 to-violet-50 rounded-2xl p-5 border border-emerald-100">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-white text-xl">🏆</div>
+            <div>
+              <div class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Загальний прогрес тижня</div>
+              <div class="text-2xl font-bold text-gray-800"><span id="total-percent">0</span>% виконано</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs text-gray-500 font-semibold">Виконано завдань</div>
+            <div class="text-2xl font-bold gradient-text"><span id="total-done">0</span>/28</div>
+          </div>
+        </div>
+        <div class="w-full bg-white rounded-full h-3 overflow-hidden">
+          <div id="progress-bar" class="h-full bg-gradient-to-r from-emerald-500 via-cyan-500 to-violet-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Кнопки дій -->
+      <div class="flex flex-wrap gap-3 mt-6 no-print">
+        <button id="screenshot-btn" class="px-5 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-lg transition flex items-center gap-2">
+          📸 Зберегти як зображення
+        </button>
+        <button id="print-btn" class="px-5 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-xl font-semibold hover:border-emerald-400 hover:text-emerald-600 transition flex items-center gap-2">
+          🖨️ Роздрукувати
+        </button>
+        <button id="reset-tracker" class="px-5 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-xl font-semibold hover:border-red-400 hover:text-red-600 transition flex items-center gap-2">
+          🗑️ Очистити
+        </button>
+      </div>
+    </div>
+
+    <!-- Підказки -->
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="glass rounded-2xl p-5 card-hover">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-2xl">💡</span>
+          <h3 class="font-bold text-gray-800">Порада для трекера</h3>
+        </div>
+        <p class="text-sm text-gray-600">Не женись за ідеальністю! Навіть 4 з 7 днів — це вже перемога. Важливо формувати звичку, а не карати себе за пропуски.</p>
+      </div>
+      <div class="glass rounded-2xl p-5 card-hover">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-2xl">📤</span>
+          <h3 class="font-bold text-gray-800">Формат здачі</h3>
+        </div>
+        <p class="text-sm text-gray-600">Скріншот заповненої таблиці або фото розгорнутого паперового трекера. Можеш також перенести в Google Таблиці чи Notion.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Варіант 2: Інфографіка -->
+  <section id="tab2" class="hidden fade-in">
+    <div class="glass rounded-3xl p-6 sm:p-8 mb-6 shadow-xl">
+      <div class="flex items-start gap-4 mb-6">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-400 to-pink-500 flex items-center justify-center text-2xl flex-shrink-0">🧠</div>
+        <div class="flex-1">
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">Антистрес-інструкція для випускника</h2>
+          <p class="text-gray-600">Візуальна пам'ятка-інфографіка для однолітків. 4 блоки — 4 складові ЗСЖ. Лаконічно, яскраво, по суті.</p>
+        </div>
+      </div>
+
+      <!-- Інфографіка -->
+      <div class="relative">
+        <div class="absolute inset-0 bg-gradient-to-br from-emerald-50 via-cyan-50 to-violet-50 rounded-3xl"></div>
+        <div class="relative p-6 sm:p-10">
+          <div class="text-center mb-8">
+            <div class="inline-block px-4 py-2 bg-white rounded-full text-sm font-bold text-gray-700 shadow-sm mb-3">🎓 ІНФОГРАФІКА ДЛЯ ВИПУСКНИКА</div>
+            <h3 class="text-3xl sm:text-4xl font-bold gradient-text mb-2">Як вижити під час іспитів</h3>
+            <p class="text-gray-600">4 правила, які рятують тіло, мозок і нерви</p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-5">
+            <!-- Блок 1 -->
+            <div class="info-block bg-white rounded-2xl p-6 shadow-md">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-2xl">🪑</div>
+                <div>
+                  <div class="text-xs text-orange-600 font-bold uppercase tracking-wider">Блок 1</div>
+                  <h4 class="text-lg font-bold text-gray-800">Стоп-сидяча пастка</h4>
+                </div>
+              </div>
+              <p class="text-sm text-gray-600 mb-3">2 швидкі вправи під час 2-годинної підготовки за комп'ютером:</p>
+              <ul class="space-y-2 text-sm">
+                <li class="flex gap-2"><span class="text-orange-500 font-bold">1.</span><span><b>«Ні-ні» для шиї:</b> повільно нахили голову вліво-вправо, вперед-назад (30 сек).</span></li>
+                <li class="flex gap-2"><span class="text-orange-500 font-bold">2.</span><span><b>«20-20-20» для очей:</b> кожні 20 хв дивись 20 сек на об'єкт за 20 футтів (6 м).</span></li>
+              </ul>
+            </div>
+
+            <!-- Блок 2 -->
+            <div class="info-block bg-white rounded-2xl p-6 shadow-md">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-2xl">🥗</div>
+                <div>
+                  <div class="text-xs text-emerald-600 font-bold uppercase tracking-wider">Блок 2</div>
+                  <h4 class="text-lg font-bold text-gray-800">Мозок на максимумі</h4>
+                </div>
+              </div>
+              <p class="text-sm text-gray-600 mb-3">Корисні перекуси замість швидких вуглеводів:</p>
+              <ul class="space-y-2 text-sm">
+                <li class="flex gap-2"><span class="text-emerald-500 font-bold">✓</span><span><b>Горіхи + ягоди</b> — омега-3 для концентрації.</span></li>
+                <li class="flex gap-2"><span class="text-emerald-500 font-bold">✓</span><span><b>Йогурт + банан</b> — повільна енергія без стрибків цукру.</span></li>
+                <li class="flex gap-2"><span class="text-emerald-500 font-bold">✓</span><span><b>Вода з лимоном</b> — замість енергетика.</span></li>
+              </ul>
+            </div>
+
+            <!-- Блок 3 -->
+            <div class="info-block bg-white rounded-2xl p-6 shadow-md">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center text-2xl">📵</div>
+                <div>
+                  <div class="text-xs text-violet-600 font-bold uppercase tracking-wider">Блок 3</div>
+                  <h4 class="text-lg font-bold text-gray-800">Інформаційний детокс</h4>
+                </div>
+              </div>
+              <p class="text-sm text-gray-600 mb-3">Налаштуй гаджети та простір, щоб мозок відпочивав:</p>
+              <ul class="space-y-2 text-sm">
+                <li class="flex gap-2"><span class="text-violet-500 font-bold">1.</span><span><b>Режим «Не турбувати»</b> під час навчання — тільки важливі дзвінки.</span></li>
+                <li class="flex gap-2"><span class="text-violet-500 font-bold">2.</span><span><b>Провітрювання + рослина</b> на столі — кисень для мозку.</span></li>
+                <li class="flex gap-2"><span class="text-violet-500 font-bold">3.</span><span><b>Перерва 5 хв без екранів</b> кожні 45 хв роботи.</span></li>
+              </ul>
+            </div>
+
+            <!-- Блок 4 -->
+            <div class="info-block bg-white rounded-2xl p-6 shadow-md">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-400 to-blue-500 flex items-center justify-center text-2xl">🌙</div>
+                <div>
+                  <div class="text-xs text-indigo-600 font-bold uppercase tracking-wider">Блок 4</div>
+                  <h4 class="text-lg font-bold text-gray-800">Формула якісного сну</h4>
+                </div>
+              </div>
+              <p class="text-sm text-gray-600 mb-3">Золоте правило: що робити за 60 хв до ліжка:</p>
+              <ul class="space-y-2 text-sm">
+                <li class="flex gap-2"><span class="text-indigo-500 font-bold">23:00</span><span>Вимкнути всі екрани, приглушити світло.</span></li>
+                <li class="flex gap-2"><span class="text-indigo-500 font-bold">23:15</span><span>Теплий душ або чай без кофеїну.</span></li>
+                <li class="flex gap-2"><span class="text-indigo-500 font-bold">23:30</span><span>10 хв читання паперової книги або дихальна вправа 4-7-8.</span></li>
+                <li class="flex gap-2"><span class="text-indigo-500 font-bold">23:45</span><span>Відбій. 7.5–8 годин сну = продуктивний ранок.</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Фінальний заклик -->
+          <div class="mt-8 text-center bg-gradient-to-r from-emerald-500 via-cyan-500 to-violet-500 rounded-2xl p-6 text-white">
+            <div class="text-3xl mb-2">✨</div>
+            <p class="text-lg font-bold mb-1">Пам'ятай: ти — не робот!</p>
+            <p class="text-sm opacity-95">Твоє здоров'я — фундамент успіху на іспитах, а не перешкода.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Кнопки -->
+      <div class="flex flex-wrap gap-3 mt-6 no-print">
+        <button id="save-info" class="px-5 py-3 bg-gradient-to-r from-violet-500 to-pink-500 text-white rounded-xl font-semibold hover:shadow-lg transition flex items-center gap-2">
+          📸 Зберегти інфографіку
+        </button>
+        <button id="print-info" class="px-5 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-xl font-semibold hover:border-violet-400 hover:text-violet-600 transition flex items-center gap-2">
+          🖨️ Роздрукувати
+        </button>
+      </div>
+    </div>
+
+    <!-- Вимоги до дизайну -->
+    <div class="grid md:grid-cols-3 gap-4">
+      <div class="glass rounded-2xl p-5 card-hover">
+        <div class="text-2xl mb-2">🎨</div>
+        <h3 class="font-bold text-gray-800 mb-1">Лаконічність</h3>
+        <p class="text-sm text-gray-600">Без «води» — тільки конкретні дії та поради.</p>
+      </div>
+      <div class="glass rounded-2xl p-5 card-hover">
+        <div class="text-2xl mb-2">📝</div>
+        <h3 class="font-bold text-gray-800 mb-1">Чіткість</h3>
+        <p class="text-sm text-gray-600">Не більше 3–4 речень на один блок.</p>
+      </div>
+      <div class="glass rounded-2xl p-5 card-hover">
+        <div class="text-2xl mb-2">🔥</div>
+        <h3 class="font-bold text-gray-800 mb-1">Яскравість</h3>
+        <p class="text-sm text-gray-600">Заголовки, іконки, контраст — щоб чіпляло око.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="mt-8 text-center text-sm text-gray-500 pb-6">
+    <p>🌱 Створено з турботою про твоє здоров'я та успіх</p>
+  </footer>
+</div>
+
+<script>
+  // Дані трекера
+  const days = [
+    { day: 'Понеділок', emoji: '📅', water: '1.5 л води, без енергетиків', move: '15 хв зарядки для шиї та спини', digital: 'Без телефону за 1 год до сну', sleep: 'Відбій о 23:00 (7.5 год)' },
+    { day: 'Вівторок', emoji: '📅', water: 'Порція овочів у кожному прийомі їжі', move: '30 хв пішої прогулянки', digital: 'Провітрювання робочого місця', sleep: 'Відбій о 23:00' },
+    { day: 'Середа', emoji: '📅', water: 'Склянка води перед сніданком', move: '10 хв розтяжки спини', digital: 'Режим "Не турбувати" 2 год', sleep: 'Відбій о 23:30' },
+    { day: 'Четвер', emoji: '📅', water: 'Фрукт замість солодкого', move: 'Вправи для очей 20-20-20', digital: 'Вологе прибирання столу', sleep: 'Чай без кофеїну за год до сну' },
+    { day: 'П\'ятниця', emoji: '📅', water: '1.5 л води + лимон', move: 'Прогулянка на свіжому повітрі', digital: 'Без соцмереж за 1 год до сну', sleep: 'Відбій о 23:00' },
+    { day: 'Субота', emoji: '📅', water: 'Збалансований сніданок', move: 'Активний відпочинок 40 хв', digital: 'Цифровий шабат 2 години', sleep: 'Відбій о 23:00' },
+    { day: 'Неділя', emoji: '📅', water: 'Підготовка корисних перекусів', move: 'Йога або прогулянка', digital: 'Планування тижня без гаджетів', sleep: 'Ранній відбій о 22:30' }
+  ];
+
+  const categories = ['water', 'move', 'digital', 'sleep'];
+  let trackerData = JSON.parse(localStorage.getItem('healthTracker') || '{}');
+
+  // Рендер трекера
+  function renderTracker() {
+    const tbody = document.getElementById('tracker-body');
+    tbody.innerHTML = '';
+    days.forEach((d, dayIdx) => {
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-gray-100';
+      tr.innerHTML = `
+        <td class="py-3 px-2">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">${d.emoji}</span>
+            <span class="font-bold text-gray-800 text-sm sm:text-base">${d.day}</span>
+          </div>
+        </td>
+        ${categories.map(cat => {
+          const key = `${dayIdx}-${cat}`;
+          const done = trackerData[key];
+          return `
+            <td class="py-2 px-2">
+              <div class="tracker-cell ${done ? 'done' : 'bg-white'} border-2 ${done ? 'border-emerald-400' : 'border-gray-100'} rounded-xl p-3 relative" data-key="${key}">
+                <div class="text-xs text-gray-700 font-medium leading-snug">${d[cat]}</div>
+                <div class="check-icon absolute top-1 right-1 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xs">✓</div>
+              </div>
+            </td>
+          `;
+        }).join('')}
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.querySelectorAll('.tracker-cell').forEach(cell => {
+      cell.addEventListener('click', () => {
+        const key = cell.dataset.key;
+        trackerData[key] = !trackerData[key];
+        localStorage.setItem('healthTracker', JSON.stringify(trackerData));
+        renderTracker();
+      });
+    });
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    categories.forEach(cat => {
+      let count = 0;
+      for (let i = 0; i < 7; i++) {
+        if (trackerData[`${i}-${cat}`]) count++;
+      }
+      const progMap = { water: 'prog-water', move: 'prog-move', digital: 'prog-digital', sleep: 'prog-sleep' };
+      document.getElementById(progMap[cat]).textContent = `${count}/7`;
+    });
+
+    let total = 0;
+    Object.values(trackerData).forEach(v => { if (v) total++; });
+    const percent = Math.round((total / 28) * 100);
+    document.getElementById('total-percent').textContent = percent;
+    document.getElementById('total-done').textContent = total;
+    document.getElementById('progress-bar').style.width = percent + '%';
+  }
+
+  // Tabs
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      document.getElementById('tab1').classList.toggle('hidden', tab !== '1');
+      document.getElementById('tab2').classList.toggle('hidden', tab !== '2');
+    });
+  });
+
+  // Таймер
+  let timerSeconds = 30 * 60;
+  let timerInterval = null;
+  const timerEl = document.getElementById('timer');
+
+  function updateTimerDisplay() {
+    const m = Math.floor(timerSeconds / 60);
+    const s = timerSeconds % 60;
+    timerEl.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
+
+  document.getElementById('startTimer').addEventListener('click', (e) => {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      e.target.textContent = 'Старт';
+    } else {
+      timerInterval = setInterval(() => {
+        if (timerSeconds > 0) {
+          timerSeconds--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          e.target.textContent = 'Старт';
+          timerEl.textContent = 'Час вийшов!';
+          alert('⏰ Час вийшов! Чудова робота!');
+        }
+      }, 1000);
+      e.target.textContent = 'Пауза';
+    }
+  });
+
+  document.getElementById('resetTimer').addEventListener('click', () => {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerSeconds = 30 * 60;
+    updateTimerDisplay();
+    document.getElementById('startTimer').textContent = 'Старт';
+  });
+
+  // Reset tracker
+  document.getElementById('reset-tracker').addEventListener('click', () => {
+    if (confirm('Очистити весь трекер? Цю дію не можна скасувати.')) {
+      trackerData = {};
+      localStorage.removeItem('healthTracker');
+      renderTracker();
+    }
+  });
+
+  // Print
+  document.getElementById('print-btn').addEventListener('click', () => window.print());
+  document.getElementById('print-info').addEventListener('click', () => window.print());
+
+  // Screenshot (використовуємо window.print як fallback, або html2canvas)
+  async function saveAsImage(selector) {
+    if (!window.html2canvasLoaded) {
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      document.head.appendChild(script);
+      await new Promise(r => script.onload = r);
+      window.html2canvasLoaded = true;
+    }
+    const el = document.querySelector(selector);
+    const canvas = await html2canvas(el, { backgroundColor: '#f0fdf4', scale: 2 });
+    const link = document.createElement('a');
+    link.download = 'health-tracker.png';
+    link.href = canvas.toDataURL();
+    link.click();
+  }
+
+  document.getElementById('screenshot-btn').addEventListener('click', () => saveAsImage('#tab1'));
+  document.getElementById('save-info').addEventListener('click', () => saveAsImage('#tab2'));
+
+  // Init
+  renderTracker();
+</script>
+</body>
+</html>
